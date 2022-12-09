@@ -18,6 +18,6 @@ public class BankApiController {
 
     @GetMapping
     public List<Transaction> getTransactions() {
-        return this.bankService.getData();
+        return this.bankService.getTransactions();
     }
 }

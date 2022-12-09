@@ -13,7 +13,7 @@ public class BankService {
 
     private BankAPI bankApi;
 
-    public List<Transaction> getData() {
+    public List<Transaction> getTransactions() {
         return bankApi.getTransactions();
     }
 }
