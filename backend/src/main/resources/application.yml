@@ -17,3 +17,4 @@ nordigen:
   secret:
     id: ${nordigen.secret.id}
     key: ${nordigen.secret.key}
+  account: ${nordigen.account}
