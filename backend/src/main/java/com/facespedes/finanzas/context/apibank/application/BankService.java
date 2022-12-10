@@ -3,29 +3,46 @@ package com.facespedes.finanzas.context.apibank.application;
 import com.facespedes.finanzas.context.apibank.domain.BankAPI;
 import com.facespedes.finanzas.context.apibank.domain.Transaction;
 import com.facespedes.finanzas.context.apibank.domain.TransactionRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Service
 public class BankService {
 
-    private BankAPI bankApi;
-    private TransactionRepository transactionRepository;
+    private final BankAPI bankApi;
+    private final TransactionRepository transactionRepository;
+    private LocalDateTime lastUpdate;
+
 
     public List<Transaction> getTransactions() {
-        List<Transaction> transactions = bankApi.getTransactions();
-        List<Transaction> transactionsFromBd = transactionRepository.findAll();
-        List<Transaction> newTransactions = transactions.stream()
-                .filter(transaction -> !transactionsFromBd.contains(transaction)).toList();
+        if(transactionsNeedsUpdate())
+            updateTransactions();
+
+        return transactionRepository.findAll();
+    }
+
+    private boolean transactionsNeedsUpdate() {
+        int hoursToUpdate = 1;
+        return lastUpdate == null || lastUpdate.isBefore(LocalDateTime.now().minusHours(hoursToUpdate));
+    }
+
+    private void updateTransactions() {
+        lastUpdate = LocalDateTime.now();
+
+        List<Transaction> newTransactions = getNewTransactionsFromApi();
         this.transactionRepository.saveAll(newTransactions);
 
-        ArrayList<Transaction> allTransactions = new ArrayList<>(transactions);
-        allTransactions.addAll(newTransactions);
-
-        return allTransactions;
     }
+
+    private List<Transaction> getNewTransactionsFromApi() {
+        List<Transaction> transactionsFromBd = transactionRepository.findAll();
+        List<Transaction> transactionsFromApi = bankApi.getTransactions();
+        return transactionsFromApi.stream()
+                .filter(transaction -> !transactionsFromBd.contains(transaction)).toList();
+    }
+
 }
