@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {DesktopOutlined, FileOutlined, PieChartOutlined, TeamOutlined, UserOutlined,} from '@ant-design/icons';
-import {Layout, Menu, theme} from 'antd';
+import {Layout, Menu, theme, Select} from 'antd';
 import TransactionsTable from "./transactionsTable";
 
 const {Header, Content, Footer, Sider} = Layout;
@@ -21,11 +21,14 @@ const items = [
     getItem('Files', '9', <FileOutlined/>),
 ];
 
+const handleChange = (value) => {
+    console.log(`selected ${value}`);
+};
+
+
 const App = () => {
-    const [collapsed, setCollapsed] = useState(false);
-    const {
-        token: {colorBgContainer},
-    } = theme.useToken();
+    const [collapsed, setCollapsed] = useState(true);
+    const {token: {colorBgContainer}} = theme.useToken();
     return (
         <Layout style={{minHeight: '100vh'}}>
             <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
@@ -35,6 +38,13 @@ const App = () => {
             <Layout className="site-layout">
                 <Header style={{padding: 0, background: colorBgContainer}}/>
                 <Content style={{margin: '0 16px'}}>
+                    <Select defaultValue="current month"
+                        style={{width: 200}}
+                        onChange={handleChange}
+                        options={[
+                            {value: 'current month', label: 'Current Month'},
+                            {value: 'current year', label: 'Current Year'},
+                        ]}/>
                     <TransactionsTable/>
                 </Content>
                 <Footer style={{textAlign: 'center'}}>
