@@ -12,13 +12,29 @@ const columns = [
     }
     ];
 
+const calculateDateRange = (dateRange) => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth() + 1;
+    const day = today.getDate();
 
-const TransactionsTable = () => {
+    switch (dateRange) {
+        case 'current month':
+            return `${year}-${month}-01`;
+        case 'current year':
+            return `${year}-01-01`;
+        default:
+            return `${year}-${month}-${day}`;
+    }
+}
+
+const TransactionsTable = ({dateRange}) => {
     const [loading, setLoading] = useState(true);
     const [transactions, setTransactions] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:8080/api/v1/transactions').then(response => response.json()).then(data => {
+        fetch('http://localhost:8080/api/v1/transactions/' + calculateDateRange(dateRange))
+            .then(response => response.json()).then(data => {
             setLoading(false);
             const transactions = data.map((transaction) => {
                 return {
@@ -33,7 +49,7 @@ const TransactionsTable = () => {
 
             setTransactions(transactions);
         });
-    }, []);
+    }, [dateRange]);
     return <Table columns={columns} dataSource={transactions} loading={loading}/>;
 };
 

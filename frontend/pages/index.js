@@ -21,14 +21,18 @@ const items = [
     getItem('Files', '9', <FileOutlined/>),
 ];
 
-const handleChange = (value) => {
-    console.log(`selected ${value}`);
-};
 
 
 const App = () => {
+    const [dateRange, setDateRange] = useState('current month');
     const [collapsed, setCollapsed] = useState(true);
     const {token: {colorBgContainer}} = theme.useToken();
+
+    const handleChange = (value) => {
+        console.log(value);
+        setDateRange(value);
+    };
+
     return (
         <Layout style={{minHeight: '100vh'}}>
             <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
@@ -45,7 +49,7 @@ const App = () => {
                             {value: 'current month', label: 'Current Month'},
                             {value: 'current year', label: 'Current Year'},
                         ]}/>
-                    <TransactionsTable/>
+                    <TransactionsTable dateRange={dateRange} />
                 </Content>
                 <Footer style={{textAlign: 'center'}}>
                     Ant Design ©2018 Created by Ant UED

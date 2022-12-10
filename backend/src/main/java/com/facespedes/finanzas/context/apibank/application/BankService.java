@@ -6,8 +6,10 @@ import com.facespedes.finanzas.context.apibank.domain.TransactionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -18,11 +20,15 @@ public class BankService {
     private LocalDateTime lastUpdate;
 
 
-    public List<Transaction> getTransactions() {
+    public List<Transaction> getTransactions(Optional<LocalDate> from) {
         if(transactionsNeedsUpdate())
             updateTransactions();
 
-        return transactionRepository.findAll();
+        if(from.isPresent())
+            return transactionRepository.findAllBefore(from.get());
+        else
+            return transactionRepository.findAll();
+
     }
 
     private boolean transactionsNeedsUpdate() {
