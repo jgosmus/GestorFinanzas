@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @AllArgsConstructor
-@RequestMapping("/")
+@RequestMapping("api/v1")
 @RestController
 public class BankApiController {
 
     private BankService bankService;
 
-    @GetMapping
+    @GetMapping("transactions")
     public List<Transaction> getTransactions() {
         return this.bankService.getTransactions();
     }

@@ -18,9 +18,8 @@ const TransactionsTable = () => {
     const [transactions, setTransactions] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:8080/').then(response => response.json()).then(data => {
+        fetch('http://localhost:8080/api/v1/transactions').then(response => response.json()).then(data => {
             setLoading(false);
-            console.log(data);
             const transactions = data.map((transaction) => {
                 return {
                     key: transaction.id,
